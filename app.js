@@ -60,22 +60,29 @@ const OTHER_FOSSILS = [
   },
 ];
 app.get('/', (req, res) => {
+  const sess = req.session;
+  if (sess.username) {
+    return res.redirect('/top-fossils');
+  }
   res.render('homepage.html.njk');
 })
 
-app.post('/get-name', (req, res) => {
-  const username = req.body.name;
-  req.session.username = username;
-
+app.get('/get-name', (req, res) => {
+  const sess = req.session;
+  sess.username = req.query.name;
   res.redirect('/top-fossils');
 })
 
 app.get('/top-fossils', (req, res) => {
-  const fossils = MOST_LIKED_FOSSILS;
-  
-  res.render('top-fossils.html.njk', {
-    fossils: fossils,
-  });
+  const sess = req.session;  
+  if (sess.username) {
+    res.render('top-fossils.html.njk', {
+      name: sess.username,
+      fossils: MOST_LIKED_FOSSILS,
+    });
+  } else {
+    res.redirect('/')
+  }
 })
 
 app.get('/random-fossil.json', (req, res) => {
