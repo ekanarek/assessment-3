@@ -85,6 +85,17 @@ app.get('/top-fossils', (req, res) => {
   }
 })
 
+app.post('/like-fossil', (req, res) => {
+  const sess = req.session;
+  const fossilKey = req.body.fossil;
+  if (fossilKey) {
+    MOST_LIKED_FOSSILS[fossilKey].num_likes += 1;
+  }
+  res.render('thank-you.html.njk', {
+    name: sess.username
+  });
+})
+
 app.get('/random-fossil.json', (req, res) => {
   const randomFossil = lodash.sample(OTHER_FOSSILS);
   res.json(randomFossil);
